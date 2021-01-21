@@ -23,10 +23,10 @@ class Model():
         rng = np.random.default_rng()
 
         if baseNode == None:
-            return rng.choice(rng.choice([node for node in nodes[:len(nodes) - 1] if node.size]))
+            return random.choice(random.choice([node for node in nodes[:len(nodes) - 1] if len(node) != 0]))
         else:
-            return rng.choice(rng.choice([node for node in nodes[self.indexNodes(nodes, baseNode)[1] + 1:] if
-                                          node.size]))  # Indexes startingNode and gives node in a later Layer
+            return random.choice(random.choice([node for node in nodes[self.indexNodes(nodes, baseNode)[1] + 1:] if
+                                          len(node) != 0]))  # Indexes startingNode and gives node in a later Layer
 
     def genModel(self):
         # Layer 1 Nodes 1-5: Input nodes
@@ -41,9 +41,10 @@ class Model():
             self.newConnection()
 
 
-        #Unindent these to get a trained model
-        #self.nodes = np.array([np.array([1, 2, 3, 4, 5]), np.array([]), np.array([9.]),np.array([]), np.array([6, 7, 8])])
-        #self.connections = {1: [[8, 0.23362676416254213]], 2: [[7, -0.24968329056460117], [8, -0.09171069868282744]], 3: [[7, 0.5971538998921483], [6, -0.9740282816121392]], 4: [[6, 0.5307315162044748], [8, 0.8100357048937883]], 5: [], 6: [], 7: [], 8: [], 9.0: []}
+        #Pre-done model
+        #self.nodes = np.array([list([1, 2, 3, 4, 5]), list([]), list([]), list([]),list([6, 7, 8])])
+        #self.connections = {1: [[8, -0.38550895579950145]], 2: [[8, -0.5995181403412123], [7, -0.4237285674580474]], 3: [[6, -0.6282153477412172]], 4: [[8, 0.6057289123964497], [7, -0.37032096596267106]], 5: [[8, -0.8773839266357248], [7, 0.52]], 6: [], 7: [], 8: []}
+
 
     def newConnection(self):
 
@@ -74,7 +75,7 @@ class Model():
 
 
         for key, value in self.connections.items():
-            if self.indexNodes(self.nodes, key)[1] == 0:
+            if key in self.nodes[0]:
                 values[key] = baseValues[key - 1]
             else:
                 values[key] = 0
@@ -84,7 +85,7 @@ class Model():
         # Adding all connections together
         for i in range(len(self.nodes) - 1):
             for key, value in self.connections.items():
-                if self.indexNodes(self.nodes, key)[1] == i and len(value) != 0:
+                if key in self.nodes[i] and len(value) != 0:
                     for subValue in value:
                         try:
                             values[subValue[0]] += values[key] * subValue[1]
@@ -99,8 +100,8 @@ class Model():
     def crossover(self, parent2):
         # Breeds two brains with this one having dominant genes:
         babyModel = np.array(
-            [np.array([1, 2, 3, 4, 5]), np.array([]), np.array([]), np.array([]), np.array([6, 7, 8])])
-        babyConnections = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: []}
+            [[1, 2, 3, 4, 5], [], [], [], [6, 7, 8]])
+        babyConnections = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [],  8: []}
 
 
 
