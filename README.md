@@ -7,6 +7,7 @@ MAKE SURE TO EXTRACT AFTER DOWNLOADING, that was my main problem when I tried to
 Using my new and improved genetic algorithim that fixes a bunch of previous bugs, this one actually finds a solution evauntally. It runs a bit slow as doing 25 cars at once, with all the calculations might not be the best, but you can expirement with lower population it just takes longer to converge on the optimal solution. 
 
 THINGS TO MESS WITH IF YOU WANT TO:
+
 Under game.py: self.show_bounds, set it to True if you want to see all car sights, the boundaries, and the gates which give fitness.
 
 Under neuralNetwork.py: self.populationSize, how many cars you want.
@@ -15,6 +16,7 @@ Under neuralNetwork.py: self.alive_after_death, how many cars, ranked by highest
 
 
 Some basic explanation on how the model works:
+
 Step 1: Make 25 random neural networks, with the model.nodes being the nodes in the network and model.connections having a connection between the node with each strength
 
 Step 2: Run the models through the simulated game and see how far they get
