@@ -7,8 +7,10 @@ MAKE SURE TO EXTRACT AFTER DOWNLOADING, that was my main problem when I tried to
 Using my new and improved genetic algorithim that fixes a bunch of previous bugs, this one actually finds a solution evauntally. It runs a bit slow as doing 25 cars at once, with all the calculations might not be the best, but you can expirement with lower population it just takes longer to converge on the optimal solution. 
 
 THINGS TO MESS WITH IF YOU WANT TO:
-Under game.py: self.show_bounds, set it to True if you want to see all car sights, the boundaries, and the gates which give fitness
-Under neuralNetwork.py: self.populationSize, how many cars you want
+Under game.py: self.show_bounds, set it to True if you want to see all car sights, the boundaries, and the gates which give fitness.
+
+Under neuralNetwork.py: self.populationSize, how many cars you want.
+
 Under neuralNetwork.py: self.alive_after_death, how many cars, ranked by highest fitness, to breed and create the next generation
 
 
