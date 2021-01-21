@@ -8,11 +8,13 @@ from model import Model
 
 
 
+import multiprocessing as mp
+
 class DodgeNN():
     def generateInitialPopulation(self):
 
-        self.populationSize = 25
-        self.alive_after_death = 5
+        self.populationSize = 20
+        self.alive_after_death = 3
         models = np.empty((self.populationSize), Model)
 
         for i in range(self.populationSize):
@@ -127,8 +129,8 @@ class DodgeNN():
 
         while game.population_alive != 0:
             predictions = []
-            for i, model in enumerate(self.models):
 
+            for i, model in enumerate(self.models):
                 predictions.append(model.predict(information[i]))
 
             information  = game.run(predictions)
@@ -138,8 +140,8 @@ class DodgeNN():
 
 
 
-
-
+        if game.track_times:
+            print(game.downTimeSummary())
 
 
     def saveModel(self, model):
@@ -168,7 +170,9 @@ if __name__ == "__main__":
     file.close()
 
     while True:
+
         nn.fitnessFunc()
+
         avg = sum(model.fitScore for model in nn.models) / len(nn.models)
         print("Generation " + str(nn.generations) + " Average: " + str(round(avg, 2)))
 
@@ -177,7 +181,7 @@ if __name__ == "__main__":
 
         nn.killPopulation()
 
-        #nn.killPopulation(0.2)
+
         with open("avg.txt", "a+") as file:
             file.write(str(round(avg, 2)) + "\n")
         file.close()
