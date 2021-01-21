@@ -15,6 +15,9 @@ Under neuralNetwork.py: self.populationSize, how many cars you want.
 Under neuralNetwork.py: self.alive_after_death, how many cars, ranked by highest fitness, to breed and create the next generation
 
 
+--------------------------------------------
+
+
 Some basic explanation on how the model works:
 
 Step 1: Make 25 random neural networks, with the model.nodes being the nodes in the network and model.connections having a connection between the node with each strength
