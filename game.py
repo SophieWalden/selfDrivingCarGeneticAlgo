@@ -2,7 +2,7 @@
 import sys
 import math
 import copy
-
+import time
 
 import pygame
 from pygame.locals import *
@@ -107,6 +107,20 @@ class Player:
         return rect
 
 
+#https://stackoverflow.com/questions/20677795/how-do-i-compute-the-intersection-point-of-two-lines
+def findIntersection(x1, y1, x2, y2, x3, y3, x4, y4):
+    global vec2
+    try:
+        uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1))
+        uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1))
+        if 0 <= uA <= 1 and 0 <= uB <= 1:
+            intersectionX = x1 + (uA * (x2 - x1))
+            intersectionY = y1 + (uA * (y2 - y1))
+            return vec2(intersectionX, intersectionY)
+    except Exception:
+        pass
+    return None
+
 class Wall:
     def __init__(self, pos1, pos2):
         self.pos1, self.pos2 = pos1, pos2
@@ -129,21 +143,12 @@ class Wall:
         return (p0 * p1 <= 0) & (p2 * p3 <= 0)
 
 
-    #https://stackoverflow.com/questions/20677795/how-do-i-compute-the-intersection-point-of-two-lines
-    def findIntersection(self, x1, y1, x2, y2, x3, y3, x4, y4):
-        global vec2
-        uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1))
-        uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1))
-        if 0 <= uA <= 1 and 0 <= uB <= 1:
-            intersectionX = x1 + (uA * (x2 - x1))
-            intersectionY = y1 + (uA * (y2 - y1))
-            return vec2(intersectionX, intersectionY)
-        return None
+
 
 
     def check_collision(self, frame):
         for line in frame:
-            if self.intersects(line, [self.pos1, self.pos2]):
+            if findIntersection(line[0][0], line[0][1], line[1][0], line[1][1], self.pos1[0], self.pos1[1], self.pos2[0], self.pos2[1]) != None:
                 return True
         return False
 
@@ -181,29 +186,29 @@ class Game:
         self.friction = 0.95
 
 
+
         # Race boundaries
         self.show_bounds = False
         self.walls = []
+
         for i, point in enumerate(
-                [(891, 361), (873, 459), (847, 524), (763, 602), (632, 660), (511, 667), (350, 640), (239, 596),
-                 (150, 571), (119, 543), (113, 516), (125, 486), (171, 450), (247, 422), (294, 376), (242, 317),
-                 (176, 286), (86, 242), (75, 206), (94, 157), (168, 104), (283, 72), (514, 79), (653, 91), (759, 120),
-                 (818, 156), (865, 234), (891, 361)]):
+                [(889, 359), (866, 240), (815, 156), (769, 127), (757, 119), (646, 88), (451, 76), (291, 69),
+                 (171, 101), (96, 151), (74, 204), (85, 238), (244, 317), (283, 349), (294, 374), (278, 400), (249, 420),
+                 (210, 452), (197, 498), (200, 558), (240, 595), (351, 639), (515, 670), (628, 660), (764, 605), (846, 528), (873, 458), (889, 359)]):
             if i != 0:
                 self.walls.append(Wall(pastPoint, point))
             pastPoint = point
 
         for i, point in enumerate(
-                [(763, 331), (752, 394), (742, 424), (725, 462), (696, 511), (658, 556), (558, 563), (481, 557),
-                 (413, 547), (368, 516), (363, 504), (371, 481), (395, 452), (429, 430), (484, 411), (500, 393),
-                 (499, 377), (490, 352), (475, 329), (442, 313), (308, 263), (292, 238), (301, 216), (329, 190),
-                 (392, 157), (422, 164), (683, 238), (710, 256), (740, 279), (762, 331)]):
+                [(761, 334), (739, 277), (685, 237), (569, 202), (395, 154), (330, 187), (304, 214), (289, 238), (308, 260),
+                 (368, 294), (398, 322), (423, 357), (429, 385), (424, 404), (416, 430), (394, 452), (375, 474), (363, 503),
+                 (407, 544), (545, 562), (656, 558), (699, 506), (746, 411), (761, 334)]):
             if i != 0:
                 self.walls.append(Wall(pastPoint, point))
             pastPoint = point
 
-        #gates = [[(883, 312), (764, 322)], [(764, 322), (838, 193)], [(838, 193), (742, 278)], [(742, 278), (769, 127)], [(769, 127), (710, 249)], [(710, 249), (665, 99)], [(665, 99), (646, 222)], [(646, 222), (571, 89)], [(571, 89), (578, 198)], [(578, 198), (489, 86)], [(489, 86), (495, 175)], [(495, 175), (404, 78)], [(404, 78), (407, 156)], [(407, 156), (237, 84)], [(237, 84), (334, 185)], [(334, 185), (99, 153)], [(99, 153), (310, 208)], [(310, 208), (134, 267)], [(134, 267), (303, 259)], [(303, 259), (267, 334)], [(267, 334), (347, 285)], [(347, 285), (294, 378)], [(294, 378), (482, 345)], [(482, 345), (266, 411)], [(266, 411), (376, 465)], [(376, 465), (208, 440)], [(208, 440), (369, 520)], [(369, 520), (145, 566)], [(145, 566), (395, 537)], [(395, 537), (302, 624)], [(302, 624), (457, 556)], [(457, 556), (433, 656)], [(433, 656), (534, 567)], [(534, 567), (528, 671)], [(528, 671), (585, 566)], [(585, 566), (669, 646)], [(669, 646), (649, 555)], [(649, 555), (812, 567)], [(812, 567), (700, 502)], [(700, 502), (873, 472)], [(873, 472), (728, 445)]]
-        gates = [[(883, 312), (764, 322)], [(838, 193), (742, 278)], [(769, 127), (710, 249)], [(665, 99), (646, 222)], [(571, 89), (578, 198)], [(489, 86), (495, 175)], [(404, 78), (407, 156)], [(237, 84), (334, 185)], [(99, 153), (310, 208)], [(134, 267), (303, 259)], [(267, 334), (347, 285)], [(294, 378), (482, 345)], [(266, 411), (376, 465)], [(208, 440), (369, 520)], [(113, 518), (383, 531)], [(145, 566), (395, 537)],[(257, 606), (413, 545)], [(302, 624), (457, 556)], [(391, 639), (481, 558)], [(433, 656), (534, 567)], [(528, 671), (585, 566)], [(669, 646), (649, 555)], [(812, 567), (700, 502)], [(873, 472), (728, 445)], [(890, 392), (758, 365)]]
+        #gates = [[(883, 312), (764, 322)], [(764, 322), (838, 193)], [(838, 193), (742, 278)], [(742, 278), (769, 127)], [(769, 127), (710, 249)],                                                                                                                                                        V                                                                      V [(710, 249), (665, 99)], [(665, 99), (646, 222)], [(646, 222), (571, 89)], [(571, 89), (578, 198)], [(578, 198), (489, 86)], [(489, 86), (495, 175)], [(495, 175), (404, 78)], [(404, 78), (407, 156)], [(407, 156), (237, 84)], [(237, 84), (334, 185)], [(334, 185), (99, 153)], [(99, 153), (310, 208)], [(310, 208), (134, 267)], [(134, 267), (303, 259)], [(303, 259), (267, 334)], [(267, 334), (347, 285)], [(347, 285), (294, 378)], [(294, 378), (482, 345)], [(482, 345), (266, 411)], [(266, 411), (376, 465)], [(376, 465), (208, 440)], [(208, 440), (369, 520)], [(369, 520), (145, 566)], [(145, 566), (395, 537)], [(395, 537), (302, 624)], [(302, 624), (457, 556)], [(457, 556), (433, 656)], [(433, 656), (534, 567)], [(534, 567), (528, 671)], [(528, 671), (585, 566)], [(585, 566), (669, 646)], [(669, 646), (649, 555)], [(649, 555), (812, 567)], [(812, 567), (700, 502)], [(700, 502), (873, 472)], [(873, 472), (728, 445)]]
+        gates = [[(883, 312), (764, 322)], [(838, 193), (742, 278)], [(769, 127), (710, 249)], [(665, 99), (646, 222)], [(571, 89), (578, 198)], [(489, 86), (495, 175)], [(404, 78), (407, 156)], [(237, 84), (334, 185)], [(99, 153), (310, 208)],[(134, 267), (303, 259)], [(267, 334), (347, 285)], [(277, 359), (390, 309)],  [(294, 378), (425, 345)], [(282, 385), (420, 410)],  [(278, 395), (420, 430)], [(266, 411), (376, 465)], [(220, 440), (375, 520)], [(200, 518), (383, 531)], [(200, 566), (395, 537)],[(257, 606), (413, 545)], [(302, 624), (457, 556)], [(391, 639), (481, 558)], [(433, 656), (534, 567)], [(528, 671), (585, 566)], [(669, 646), (649, 555)], [(812, 567), (700, 502)], [(873, 472), (728, 445)], [(890, 392), (758, 365)]]
         self.gates = []
         temp = []
         for i, gate in enumerate(gates):
@@ -211,6 +216,10 @@ class Game:
 
 
 
+        self.track_times = False
+        self.downTime = {"Drawing": 0, "Movement": 0, "Predicting": 0,
+                         "moveRotating": 0, "moveMove": 0, "moveWalls": 0, "moveGates": 0, "moveSights": 0} #Recording time of each function to see what's taking so friken long
+        self.startTime = -1
 
     def start(self):
         self.running = True
@@ -230,17 +239,30 @@ class Game:
 
         return information  # What to pass: 5 rays for how close the car is to wall
 
+    def downTimeSummary(self):
+        return self.downTime
+
     def run(self, step):
 
+        if self.startTime != -1:
+            self.downTime["Predicting"] += time.process_time() - self.startTime
+
+        startTime = time.process_time()
         if self.gui:
             self.draw()
+        self.downTime["Drawing"] += time.process_time() - startTime
 
         self.population_alive = [player.alive for player in self.players].count(True)
         if self.population_alive == 0:
             self.running = False
 
-        self.movement(step)
+        startTime = time.process_time()
+        for i, player in enumerate(self.players):
+            self.movement(player, step[i])
+        self.downTime["Movement"] += time.process_time() - startTime
 
+
+        self.startTime = time.process_time()
         return self.generate_observation()
 
     def draw(self):
@@ -290,76 +312,89 @@ class Game:
                 pygame.draw.line(gameDisplay, (200, 200, 50), gate.pos1, gate.pos2, 2)
 
         pygame.display.flip()
-        fpsClock.tick(180)
-
-    def movement(self, steps):
-        for i, step in enumerate(steps):
+        if __name__ == "__main__":
+            fpsClock.tick(180)
 
 
+    def movement(self, player, step):
 
-            if self.players[i].alive:
+        if player.alive:
 
-                self.players[i].rotatedFrame = self.players[i].get_rotated_hitbox()
+            startTime = time.process_time()
+            player.rotatedFrame = player.get_rotated_hitbox()
+            self.downTime["moveRotating"] += time.process_time() - startTime
 
-                self.friction = 0.95
-                if step == 0:
-                    self.players[i].angle -= 1
-                    self.friction = 0.99
-                elif step == 2:
-                    self.players[i].angle += 1
-                    self.friction = 0.99
-                elif step == 1:
-                    self.players[i].velocity += self.players[i].acceleration
+            startTime = time.process_time()
+            self.friction = 0.95
+            if step == 0:
+                player.angle -= 1
+                self.friction = 0.99
+            elif step == 2:
+                player.angle += 1
+                self.friction = 0.99
+            elif step == 1:
+                player.velocity += player.acceleration
+
+            player.angle %= 360
 
 
 
-                self.players[i].velocity *= self.friction
-                self.players[i].pos[0] += math.sin(math.radians(self.players[i].angle - 90))*self.players[i].velocity * (1.3 if self.friction == 0.99 else 1)
-                self.players[i].pos[1] += math.cos(math.radians(self.players[i].angle - 90))*self.players[i].velocity * (1.3 if self.friction == 0.99 else 1)
+            player.velocity *= self.friction
+            player.pos[0] += math.sin(math.radians(player.angle - 90))*player.velocity * (1.3 if self.friction == 0.99 else 1)
+            player.pos[1] += math.cos(math.radians(player.angle - 90))*player.velocity * (1.3 if self.friction == 0.99 else 1)
 
+            self.downTime["moveMove"] += time.process_time() - startTime
+            startTime = time.process_time()
 
+            for wall in self.walls:
+                if wall.pos2[0] - 300 <= player.pos[0] <= wall.pos1[0] + 300 and wall.pos2[1] - 200 <= player.pos[1] <=wall.pos1[1] + 200:
+                    if wall.check_collision(player.rotatedFrame):
+                        player.alive = False
+
+            self.downTime["moveWalls"] += time.process_time() - startTime
+            startTime = time.process_time()
+
+            for gate in self.gates:
+                if gate.pos1[0]-200 <= player.pos[0] <= gate.pos2[0] + 200 and gate.pos1[1]-200 <= player.pos[1] <= gate.pos2[1] + 200:
+                    tempFit = player.fitness
+                    player.fitness = gate.check_collision(player.rotatedFrame, player.fitness)
+
+                    player.time += 1
+                    if player.fitness > tempFit:
+                        player.timeTillExtintcion = self.extinction_value
+
+                    if player.fitness == 56:
+                        player.alive = False
+                        player.fitness += 1/player.time
+
+            self.downTime["moveGates"] += time.process_time() - startTime
+            startTime = time.process_time()
+
+            for _, sight in enumerate(player.sights):
+                width, height = player.pos[0]+10, player.pos[1]
+                points = [(width, height), (width+1000*math.sin(math.radians(sight+player.angle)), height+1000*math.cos(math.radians(sight+player.angle)))]
+
+                intersectionPoint = [-1,-1]
+                distance = 100000
                 for wall in self.walls:
-                    if wall.check_collision(self.players[i].rotatedFrame):
-                        self.players[i].alive = False
+                    point =  findIntersection(points[0][0], points[0][1], points[1][0], points[1][1], wall.pos1[0], wall.pos1[1], wall.pos2[0], wall.pos2[1])
+
+                    if point != None:
+                        if abs(point[0]-player.pos[0]) + abs(point[1]-player.pos[1]) < distance:
+                            distance = abs(point[0]-player.pos[0]) + abs(point[1]-player.pos[1])
+                            intersectionPoint = point
 
 
-                for gate in self.gates:
-                    tempFit = self.players[i].fitness
-                    self.players[i].fitness = gate.check_collision(self.players[i].rotatedFrame, self.players[i].fitness)
+                player.intersectionPoints[_] = intersectionPoint
 
-                    self.players[i].time += 1
-                    if self.players[i].fitness > tempFit:
-                        self.players[i].timeTillExtintcion = self.extinction_value
-
-                    if self.players[i].fitness == 50:
-                        self.players[i].alive = False
-                        self.players[i].fitness += 1/self.players[i].time
+            self.downTime["moveSights"] += time.process_time() - startTime
 
 
-                for _, sight in enumerate(self.players[i].sights):
-                    width, height = self.players[i].pos[0]+10, self.players[i].pos[1]
-                    points = [(width, height), (width+1000*math.sin(math.radians(sight+self.players[i].angle)), height+1000*math.cos(math.radians(sight+self.players[i].angle)))]
+            player.timeTillExtintcion -= 1
 
-                    intersectionPoint = [-1,-1]
-                    distance = 100000
-                    for wall in self.walls:
-                        point =  wall.findIntersection(points[0][0], points[0][1], points[1][0], points[1][1], wall.pos1[0], wall.pos1[1], wall.pos2[0], wall.pos2[1])
+            if player.timeTillExtintcion <= 0:
+                player.alive = False
 
-                        if point != None:
-                            if abs(point[0]-self.players[i].pos[0]) + abs(point[1]-self.players[i].pos[1]) < distance:
-                                distance = abs(point[0]-self.players[i].pos[0]) + abs(point[1]-self.players[i].pos[1])
-                                intersectionPoint = point
-
-
-                    self.players[i].intersectionPoints[_] = intersectionPoint
-
-                self.players[i].timeTillExtintcion -= 1
-
-                if self.players[i].timeTillExtintcion <= 0:
-                    self.players[i].alive = False
-
-                if not 0 <= self.players[i].pos[0] <= 1000 and not 0 <= self.players[i].pos[1] <= 700:
-                    self.players[i].alive = False
 
 
 
@@ -385,7 +420,6 @@ if __name__ == "__main__":
 
             observation = game.run([state])
 
-            #print(observation)
 
 
 
