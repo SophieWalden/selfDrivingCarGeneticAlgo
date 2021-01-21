@@ -33,7 +33,7 @@ class Model():
         # Layer 2 Node 8: Middle nodes, may mutate for more
         # Layer 3 Nodes 6-7: Output nodes, either 0 or 1 for states 0 or 1
         self.nodes = np.array(
-            [np.array([1, 2, 3, 4, 5]), np.array([]), np.array([]), np.array([]), np.array([6, 7, 8])])
+            [[1, 2, 3, 4, 5], [], [], [],[6, 7, 8]])
         self.connections = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: []}
 
         # Starting connections
