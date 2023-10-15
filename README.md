@@ -1,10 +1,15 @@
 # selfDrivingCarGeneticAlgo
 2d car powered by a self written neural network learns to drive through genetic algorithims
 
+Neural Network Input: 5 distances of different angles from the car
+
+Neural Netork Design: Multiple partially connected layers so evolution process can figure out the important connections
+
+Neural Network Output: Left, Forward, or Right for which direction it needs to go next
+
+Genetic Algorithim: Simulates many cars at a time, takes the best cars and performs crossover on their networks to create new models!
+
 ![image](https://github.com/SophieWalden/selfDrivingCarGeneticAlgo/assets/37228858/4dd5238b-c699-459a-93fa-337c6e096d79)
-
-
-MAKE SURE TO EXTRACT AFTER DOWNLOADING, that was my main problem when I tried to redownload this from github
 
 
 Using my new and improved genetic algorithim that fixes a bunch of previous bugs, this one actually finds a solution evauntally. It runs a bit slow as doing 25 cars at once, with all the calculations might not be the best, but you can expirement with lower population it just takes longer to converge on the optimal solution. 
