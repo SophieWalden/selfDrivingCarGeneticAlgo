@@ -1,5 +1,8 @@
 # selfDrivingCarGeneticAlgo
-2d car learns to drive through genetic algorithims
+2d car powered by a self written neural network learns to drive through genetic algorithims
+
+![image](https://github.com/SophieWalden/selfDrivingCarGeneticAlgo/assets/37228858/4dd5238b-c699-459a-93fa-337c6e096d79)
+
 
 MAKE SURE TO EXTRACT AFTER DOWNLOADING, that was my main problem when I tried to redownload this from github
 
