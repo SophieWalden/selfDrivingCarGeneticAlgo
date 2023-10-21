@@ -33,7 +33,7 @@ class Model():
         # Layer 2 Node 8: Middle nodes, may mutate for more
         # Layer 3 Nodes 6-7: Output nodes, either 0 or 1 for states 0 or 1
         self.nodes = np.array(
-            [[1, 2, 3, 4, 5], [], [], [],[6, 7, 8]])
+            [[1, 2, 3, 4, 5], [], [], [],[6, 7, 8]], dtype=object)
         self.connections = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: []}
 
         # Starting connections
@@ -100,7 +100,7 @@ class Model():
     def crossover(self, parent2):
         # Breeds two brains with this one having dominant genes:
         babyModel = np.array(
-            [[1, 2, 3, 4, 5], [], [], [], [6, 7, 8]])
+            [[1, 2, 3, 4, 5], [], [], [], [6, 7, 8]],dtype=object)
         babyConnections = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [],  8: []}
 
 
